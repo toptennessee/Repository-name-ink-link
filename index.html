@@ -1,1 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The Ink Registry</title>
+<style>
+:root{
+  --bg:#0f1115;--panel:#171a21;--ink:#e8eaee;--muted:#9aa3b2;
+  --border:#232733;--accent:#86efac;--accent-ink:#06210d
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{position:sticky;top:0;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:14px 16px;z-index:10}
+h1{margin:0;font-size:1.15rem}
+h2{margin-top:0}
+.wrap{max-width:940px;margin:10px auto 80px;padding:0 12px;display:grid;gap:12px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px}
+.grid{display:grid;gap:10px}
+.two{grid-template-columns:1fr}
+@media(min-width:700px){.two{grid-template-columns:1fr 1fr}}
+label{font-weight:800;display:block;margin-bottom:4px}
+.hint{font-size:.88rem;color:var(--muted)}
+select,input,textarea{width:100%;padding:10px 12px;background:#0d1016;color:var(--ink);border:1px solid var(--border);border-radius:10px}
+textarea{min-height:82px}
+button{border:1px solid var(--border);background:#0d1016;color:var(--ink);padding:10px 12px;border-radius:10px;font-weight:900}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:#1f9d5f}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.total{font-size:2.4rem;font-weight:950}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:5px 9px;color:var(--muted);font-size:.82rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.hide{display:none!important}
+dl{display:grid;grid-template-columns:1fr auto;gap:7px 10px;margin:0}
+dt{color:var(--muted)}dd{margin:0;font-weight:850;text-align:right}
+.packet{white-space:pre-wrap;background:#0d1016;border:1px solid var(--border);border-radius:12px;padding:12px;line-height:1.45}
+</style>
+</head>
+<body>
 
+<header>
+  <div class="row" style="justify-content:space-between">
+    <div>
+      <h1>The Ink Registry</h1>
+      <div class="hint">Open tattoo estimate packet generator</div>
+    </div>
+    <span class="badge">Not a final quote</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section class="card" id="requestCard">
+  <h2>TattooEstimateRequest</h2>
+  <p class="hint">
+    Answer the minimum questions needed to create a portable estimate packet an artist can review, revise, or accept.
+  </p>
+
+  <div class="grid two">
+    <div>
+      <label>Artist class</label>
+      <select id="artistClass">
+        <option value="apprentice">Apprentice / beginner-friendly</option>
+        <option value="working_artist" selected>Working artist</option>
+        <option value="experienced_artist">Experienced artist</option>
+        <option value="specialist">Specialist</option>
+        <option value="high_demand_custom">High-demand custom</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Placement</label>
+      <select id="placement">
+        <option value="forearm">Forearm</option>
+        <option value="upper_arm">Upper arm</option>
+        <option value="leg">Leg</option>
+        <option value="chest">Chest</option>
+        <option value="back">Back</option>
+        <option value="rib">Rib / side</option>
+        <option value="hand">Hand</option>
+        <option value="neck">Neck</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Size</label>
+      <select id="size">
+        <option value="tiny">Tiny / shop minimum</option>
+        <option value="small">Small</option>
+        <option value="medium" selected>Medium</option>
+        <option value="large">Large</option>
+        <option value="extra_large">Extra large / multi-session</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Style category</label>
+      <select id="style">
+        <option value="fine_line">Fine line</option>
+        <option value="blackwork">Blackwork</option>
+        <option value="traditional">Traditional</option>
+        <option value="illustrative">Illustrative</option>
+        <option value="realism">Realism</option>
+        <option value="lettering">Lettering</option>
+        <option value="geometric">Geometric</option>
+        <option value="japanese">Japanese</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Detail level</label>
+      <select id="detail">
+        <option value="simple">Simple</option>
+        <option value="moderate" selected>Moderate</option>
+        <option value="complex">Complex</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Color mode</label>
+      <select id="colorMode">
+        <option value="blackwork">Blackwork</option>
+        <option value="black_gray" selected>Black & grey</option>
+        <option value="limited_color">Limited color</option>
+        <option value="full_color">Full color</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Design source</label>
+      <select id="designSource">
+        <option value="flash">Flash / repeatable design</option>
+        <option value="modified_reference">Modified reference</option>
+        <option value="custom" selected>Custom design</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Cover-up?</label>
+      <select id="coverUp">
+        <option value="none" selected>No</option>
+        <option value="light">Light cover-up</option>
+        <option value="heavy">Heavy cover-up</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Booking context</label>
+      <select id="urgency">
+        <option value="flexible" selected>Flexible</option>
+        <option value="soon">Soon</option>
+        <option value="specific_date">Specific date / event</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Currency</label>
+      <select id="currency">
+        <option value="USD" selected>USD</option>
+        <option value="CAD">CAD</option>
+        <option value="GBP">GBP</option>
+        <option value="EUR">EUR</option>
+        <option value="AUD">AUD</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:10px">
+    <div>
+      <label>Optional notes</label>
+      <textarea id="notes" placeholder="Describe the idea, references, mood, must-haves, or concerns."></textarea>
+    </div>
+
+    <button class="primary" id="generate">Generate EstimatePacket</button>
+  </div>
+</section>
+
+<section class="card hide" id="packetCard">
+  <h2>EstimatePacket</h2>
+
+  <div class="total" id="midEstimate">—</div>
+  <div class="hint" id="rangeEstimate">—</div>
+
+  <div class="divider"></div>
+
+  <dl>
+    <dt>Deposit suggestion</dt><dd id="deposit">—</dd>
+    <dt>Session expectation</dt><dd id="session">—</dd>
+    <dt>Confidence</dt><dd id="confidence">—</dd>
+    <dt>Object</dt><dd class="mono">TattooEstimateRequest</dd>
+  </dl>
+
+  <div class="divider"></div>
+
+  <div class="packet" id="packetText"></div>
+
+  <div class="divider"></div>
+
+  <div class="row" style="justify-content:flex-end">
+    <button id="back">Edit Request</button>
+    <button id="copy">Copy Packet</button>
+    <button class="primary" onclick="window.print()">Save PDF</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const BASE = {
+  apprentice: 120,
+  working_artist: 225,
+  experienced_artist: 375,
+  specialist: 550,
+  high_demand_custom: 850
+};
+
+const SIZE = {
+  tiny: 0.75,
+  small: 1.25,
+  medium: 2.25,
+  large: 4,
+  extra_large: 7
+};
+
+const DETAIL = {
+  simple: 1,
+  moderate: 1.35,
+  complex: 1.85
+};
+
+const STYLE = {
+  fine_line: 1.15,
+  blackwork: 1.1,
+  traditional: 1,
+  illustrative: 1.25,
+  realism: 1.75,
+  lettering: 1.1,
+  geometric: 1.25,
+  japanese: 1.5
+};
+
+const COLOR = {
+  blackwork: 1,
+  black_gray: 1.05,
+  limited_color: 1.15,
+  full_color: 1.35
+};
+
+const PLACEMENT = {
+  forearm: 1,
+  upper_arm: 1,
+  leg: 1,
+  chest: 1.15,
+  back: 1.2,
+  rib: 1.35,
+  hand: 1.4,
+  neck: 1.45
+};
+
+const DESIGN = {
+  flash: 0,
+  modified_reference: 75,
+  custom: 150
+};
+
+const COVER = {
+  none: 1,
+  light: 1.25,
+  heavy: 1.6
+};
+
+function label(value){
+  return value.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());
+}
+
+function money(n){
+  return new Intl.NumberFormat("en-US",{
+    style:"currency",
+    currency:$("currency").value,
+    maximumFractionDigits:0
+  }).format(n || 0);
+}
+
+function getRequest(){
+  return {
+    object:"TattooEstimateRequest",
+    artistClass:$("artistClass").value,
+    placement:$("placement").value,
+    size:$("size").value,
+    styleCategory:$("style").value,
+    detailLevel:$("detail").value,
+    colorMode:$("colorMode").value,
+    designSource:$("designSource").value,
+    coverUp:$("coverUp").value,
+    urgency:$("urgency").value,
+    notes:$("notes").value.trim()
+  };
+}
+
+function classify(req){
+  const difficultPlacement = ["rib","hand","neck"].includes(req.placement);
+  const lowConfidence =
+    req.coverUp === "heavy" ||
+    req.size === "extra_large" ||
+    req.styleCategory === "realism" ||
+    req.urgency === "specific_date";
+
+  let session = "Short session";
+  if(req.size === "tiny") session = "Shop minimum / short session";
+  if(req.size === "medium") session = "Half-day possible";
+  if(req.size === "large") session = "Half-day to full-day";
+  if(req.size === "extra_large") session = "Multi-session likely";
+
+  return {
+    difficultPlacement,
+    confidence: lowConfidence ? "Low" : difficultPlacement ? "Medium" : "Medium",
+    session
+  };
+}
+
+function estimate(req){
+  const base =
+    BASE[req.artistClass] *
+    SIZE[req.size] *
+    DETAIL[req.detailLevel] *
+    STYLE[req.styleCategory] *
+    COLOR[req.colorMode] *
+    PLACEMENT[req.placement] *
+    COVER[req.coverUp] +
+    DESIGN[req.designSource];
+
+  const cls = classify(req);
+
+  const spread = cls.confidence === "Low" ? 0.38 : 0.25;
+  const mid = Math.round(base / 10) * 10;
+  const low = Math.round((mid * (1 - spread)) / 10) * 10;
+  const high = Math.round((mid * (1 + spread)) / 10) * 10;
+
+  const depLow = Math.max(50, Math.round((low * 0.2) / 10) * 10);
+  const depHigh = Math.max(depLow, Math.round((mid * 0.3) / 10) * 10);
+
+  return {
+    low,
+    mid,
+    high,
+    depositLow:depLow,
+    depositHigh:depHigh,
+    confidence:cls.confidence,
+    session:cls.session
+  };
+}
+
+function buildPacket(req, est){
+  return `THE INK REGISTRY — ESTIMATE PACKET
+
+Object: TattooEstimateRequest
+
+Artist class: ${label(req.artistClass)}
+Placement: ${label(req.placement)}
+Size: ${label(req.size)}
+Style: ${label(req.styleCategory)}
+Detail: ${label(req.detailLevel)}
+Color mode: ${label(req.colorMode)}
+Design source: ${label(req.designSource)}
+Cover-up: ${label(req.coverUp)}
+Booking context: ${label(req.urgency)}
+
+Starting estimate range: ${money(est.low)} — ${money(est.high)}
+Midpoint estimate: ${money(est.mid)}
+Deposit suggestion: ${money(est.depositLow)} — ${money(est.depositHigh)}
+Session expectation: ${est.session}
+Estimate confidence: ${est.confidence}
+
+Client notes:
+${req.notes || "None provided."}
+
+Artist review:
+This is not a final quote. This packet is meant to give the artist a structured starting point. Final pricing may change after reviewing design references, skin, placement, size, schedule, shop minimums, and artist policy.
+
+Artist actions:
+[ ] Accept estimate as reasonable
+[ ] Revise estimate
+[ ] Request consultation
+[ ] Decline / not a fit`;
+}
+
+function generate(){
+  const req = getRequest();
+  const est = estimate(req);
+  const packet = buildPacket(req, est);
+
+  $("midEstimate").textContent = money(est.mid);
+  $("rangeEstimate").textContent = `Range: ${money(est.low)} — ${money(est.high)}`;
+  $("deposit").textContent = `${money(est.depositLow)} — ${money(est.depositHigh)}`;
+  $("session").textContent = est.session;
+  $("confidence").textContent = est.confidence;
+  $("packetText").textContent = packet;
+
+  $("requestCard").classList.add("hide");
+  $("packetCard").classList.remove("hide");
+}
+
+$("generate").addEventListener("click", generate);
+
+$("back").addEventListener("click",()=>{
+  $("packetCard").classList.add("hide");
+  $("requestCard").classList.remove("hide");
+});
+
+$("copy").addEventListener("click", async ()=>{
+  const text = $("packetText").textContent;
+  try{
+    await navigator.clipboard.writeText(text);
+    $("copy").textContent = "Copied";
+    setTimeout(()=>$("copy").textContent="Copy Packet",1200);
+  }catch{
+    alert(text);
+  }
+});
+</script>
+</body>
+</html>
