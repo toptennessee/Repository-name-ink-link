@@ -60,11 +60,9 @@ dt{color:var(--muted)}dd{margin:0;font-weight:850;text-align:right}
     <div>
       <label>Artist class</label>
       <select id="artistClass">
-        <option value="apprentice">Apprentice / beginner-friendly </option>
-        <option value="working_artist" selected>Working artist </option>
-        <option value="experienced_artist">Experienced artist</option>
-        <option value="specialist">Specialist</option>
-        <option value="high_demand_custom">High-demand custom</option>
+        <option value="apprentice">Apprentice / beginner-friendly</option>
+        <option value="working_artist" selected>Working artist</option>
+      
       </select>
     </div>
 
@@ -208,12 +206,18 @@ dt{color:var(--muted)}dd{margin:0;font-weight:850;text-align:right}
 <script>
 const $ = id => document.getElementById(id);
 
-const ARTIST_RATE = {
-  apprentice: { low: 80, mid: 100, high: 120 },
-  working_artist: { low: 180, mid: 215, high: 250 },
-  experienced_artist: { low: 300, mid: 375, high: 450 },
-  specialist: { low: 450, mid: 550, high: 700 },
-  high_demand_custom: { low: 700, mid: 850, high: 1100 }
+const BASE = {
+  apprentice: {
+    low: 80,
+    mid: 100,
+    high: 120
+  },
+
+  working_artist: {
+    low: 180,
+    mid: 215,
+    high: 250
+  }
 };
 
 const SIZE = {
@@ -321,7 +325,8 @@ function classify(req){
 }
 
 function estimate(req){
-  const rate = ARTIST_RATE[req.artistClass];
+
+  const rate = BASE[req.artistClass];
 
   const multiplier =
     SIZE[req.size] *
@@ -331,19 +336,28 @@ function estimate(req){
     PLACEMENT[req.placement] *
     COVER[req.coverUp];
 
-  const lowRaw = rate.low * multiplier + DESIGN[req.designSource];
-  const midRaw = rate.mid * multiplier + DESIGN[req.designSource];
-  const highRaw = rate.high * multiplier + DESIGN[req.designSource];
+  const low =
+    Math.round(
+      ((rate.low * multiplier) + DESIGN[req.designSource]) / 10
+    ) * 10;
+
+  const mid =
+    Math.round(
+      ((rate.mid * multiplier) + DESIGN[req.designSource]) / 10
+    ) * 10;
+
+  const high =
+    Math.round(
+      ((rate.high * multiplier) + DESIGN[req.designSource]) / 10
+    ) * 10;
 
   const cls = classify(req);
-  const confidenceSpread = cls.confidence === "Low" ? 1.18 : 1;
 
-  const low = Math.round((lowRaw * 0.9) / 10) * 10;
-  const mid = Math.round(midRaw / 10) * 10;
-  const high = Math.round((highRaw * confidenceSpread) / 10) * 10;
+  const depositLow =
+    Math.max(50, Math.round((low * 0.2) / 10) * 10);
 
-  const depositLow = Math.max(50, Math.round((low * 0.2) / 10) * 10);
-  const depositHigh = Math.max(depositLow, Math.round((mid * 0.3) / 10) * 10);
+  const depositHigh =
+    Math.max(depositLow, Math.round((mid * 0.3) / 10) * 10);
 
   return {
     low,
@@ -351,13 +365,14 @@ function estimate(req){
     high,
     depositLow,
     depositHigh,
-    confidence:cls.confidence,
-    session:cls.session
+    confidence: cls.confidence,
+    session: cls.session
   };
+}
 }
 
 function buildPacket(req, est){
-  return `INK LINK — ESTIMATE PACKET
+  return `THE INK Link — ESTIMATE PACKET
 
 Object: TattooEstimateRequest
 
